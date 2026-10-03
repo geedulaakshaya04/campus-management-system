@@ -30,6 +30,63 @@ import {
   getPlacementDashboard 
 } from './services/api';
 
+const DEFAULT_SEEDED_DATA = {
+  allUsers: [
+    { id: 1, username: 'admin', fullName: 'Dr. M. R. Sharma (Director)', email: 'admin@campus.edu', department: 'Administration', role: 'ROLE_ADMIN' },
+    { id: 2, username: 'hod_cse', fullName: 'Dr. K. V. Rao (HOD - CSE)', email: 'hod.cse@campus.edu', department: 'Computer Science', role: 'ROLE_HOD' },
+    { id: 3, username: 'prof_smith', fullName: 'Prof. Rajesh Smith', email: 'smith@campus.edu', department: 'Computer Science', role: 'ROLE_FACULTY' },
+    { id: 4, username: 'placement_officer', fullName: 'Mr. Suresh Verma', email: 'placement@campus.edu', department: 'Placement Cell', role: 'ROLE_PLACEMENT' },
+    { id: 5, username: 'student', fullName: 'Akshaya Narayana', email: 'akshaya@campus.edu', department: 'Computer Science', role: 'ROLE_STUDENT' }
+  ],
+  totalUsers: 5,
+  totalStudents: 1,
+  totalNotices: 3,
+  totalDrives: 3,
+  totalFaculty: 1,
+  lowAttendanceCount: 0,
+  assignments: [
+    { id: 1, title: 'Implementation of Transformer Self-Attention', subject: 'Deep Learning', dueDate: '2026-10-15', totalMarks: 20 },
+    { id: 2, title: 'Full-Stack Microservices with Spring Boot & Vite', subject: 'Web Programming', dueDate: '2026-10-18', totalMarks: 25 }
+  ],
+  placementDrives: [
+    { id: 1, companyName: 'TCS Digital', roleName: 'Digital Software Engineer', packageLPA: '9.0 LPA', minCgpa: 7.0, eligibleBranches: 'CSE, IT', driveDate: '2026-10-20', status: 'ACTIVE', jobLocation: 'Hyderabad / Bengaluru' },
+    { id: 2, companyName: 'Deloitte USI', roleName: 'Technology Analyst', packageLPA: '11.5 LPA', minCgpa: 7.5, eligibleBranches: 'CSE, IT', driveDate: '2026-10-27', status: 'ACTIVE', jobLocation: 'Hyderabad / Pune' },
+    { id: 3, companyName: 'Amazon AWS', roleName: 'Cloud Support Associate', packageLPA: '16.0 LPA', minCgpa: 8.0, eligibleBranches: 'CSE, IT', driveDate: '2026-11-05', status: 'UPCOMING', jobLocation: 'Bengaluru' }
+  ],
+  drives: [
+    { id: 1, companyName: 'TCS Digital', roleName: 'Digital Software Engineer', packageLPA: '9.0 LPA', minCgpa: 7.0, eligibleBranches: 'CSE, IT', driveDate: '2026-10-20', status: 'ACTIVE', jobLocation: 'Hyderabad / Bengaluru' },
+    { id: 2, companyName: 'Deloitte USI', roleName: 'Technology Analyst', packageLPA: '11.5 LPA', minCgpa: 7.5, eligibleBranches: 'CSE, IT', driveDate: '2026-10-27', status: 'ACTIVE', jobLocation: 'Hyderabad / Pune' },
+    { id: 3, companyName: 'Amazon AWS', roleName: 'Cloud Support Associate', packageLPA: '16.0 LPA', minCgpa: 8.0, eligibleBranches: 'CSE, IT', driveDate: '2026-11-05', status: 'UPCOMING', jobLocation: 'Bengaluru' }
+  ],
+  notices: [
+    { id: 1, title: 'Mid-Semester Examinations Schedule', category: 'EXAM', postedDate: '2026-10-02', content: 'Mid-Term examinations commence 15th October 2026.' },
+    { id: 2, title: 'National AI Hackathon 2026', category: 'EVENT', postedDate: '2026-10-01', content: 'Register your teams for the 36-hour Generative AI Hackathon.' },
+    { id: 3, title: 'TCS Digital Recruitment Drive', category: 'PLACEMENT', postedDate: '2026-09-30', content: 'Eligible students must register before 10th October.' }
+  ],
+  student: {
+    rollNumber: "24EG106A18",
+    branch: "Computer Science & Engineering",
+    semester: 6,
+    section: "A",
+    cgpa: 8.45,
+    attendancePercentage: 82,
+    backlogs: 0
+  },
+  students: [
+    {
+      id: 1,
+      rollNumber: "24EG106A18",
+      branch: "Computer Science & Engineering",
+      semester: 6,
+      section: "A",
+      cgpa: 8.45,
+      attendancePercentage: 82,
+      backlogs: 0,
+      user: { fullName: "Akshaya Narayana" }
+    }
+  ]
+};
+
 function App() {
   const [currentUser, setCurrentUser] = useState(() => {
     try {
@@ -40,7 +97,7 @@ function App() {
     }
   });
 
-  const [dashboardData, setDashboardData] = useState(null);
+  const [dashboardData, setDashboardData] = useState(DEFAULT_SEEDED_DATA);
   const [loading, setLoading] = useState(false);
   const [activeSidebarItem, setActiveSidebarItem] = useState('dashboard');
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -52,10 +109,10 @@ function App() {
     return clean;
   };
 
-  const userRole = currentUser ? getNormalizedRole(currentUser.role) : null;
+  const userRole = currentUser ? getNormalizedRole(currentUser.role) : 'STUDENT';
 
   const fetchRoleData = async (user) => {
-    setLoading(true);
+    if (!user) return;
     const role = getNormalizedRole(user?.role);
     try {
       let res;
@@ -64,49 +121,12 @@ function App() {
       else if (role === 'HOD') res = await getHodDashboard();
       else if (role === 'PLACEMENT') res = await getPlacementDashboard();
       else if (role === 'ADMIN') res = await getAdminDashboard();
-      setDashboardData(res);
+      
+      if (res) {
+        setDashboardData(res);
+      }
     } catch (err) {
-      console.warn("API live fetch returned error, using offline seed fallback:", err);
-      // Fallback data structure so screen never stays blank even if backend restarted
-      setDashboardData({
-        user: user,
-        allUsers: [
-          { id: 1, username: 'admin', fullName: 'Dr. M. R. Sharma (Director)', email: 'admin@campus.edu', department: 'Administration', role: 'ROLE_ADMIN' },
-          { id: 2, username: 'hod_cse', fullName: 'Dr. K. V. Rao (HOD - CSE)', email: 'hod.cse@campus.edu', department: 'CSE', role: 'ROLE_HOD' },
-          { id: 3, username: 'prof_smith', fullName: 'Prof. Rajesh Smith', email: 'smith@campus.edu', department: 'CSE', role: 'ROLE_FACULTY' },
-          { id: 4, username: 'placement_officer', fullName: 'Mr. Suresh Verma', email: 'placement@campus.edu', department: 'Placement Cell', role: 'ROLE_PLACEMENT' },
-          { id: 5, username: 'student', fullName: 'Akshaya Narayana', email: 'akshaya@campus.edu', department: 'CSE', role: 'ROLE_STUDENT' }
-        ],
-        totalUsers: 5,
-        totalStudents: 1,
-        totalNotices: 3,
-        totalDrives: 3,
-        assignments: [
-          { id: 1, title: 'Implementation of Transformer Self-Attention', subject: 'Deep Learning', dueDate: '2026-10-15', totalMarks: 20 },
-          { id: 2, title: 'Full-Stack Microservices with Spring Boot & Vite', subject: 'Web Programming', dueDate: '2026-10-18', totalMarks: 25 }
-        ],
-        placementDrives: [
-          { id: 1, companyName: 'TCS Digital', roleName: 'Digital Software Engineer', packageLPA: '9.0 LPA', minCgpa: 7.0, eligibleBranches: 'CSE, IT', driveDate: '2026-10-20' },
-          { id: 2, companyName: 'Deloitte USI', roleName: 'Technology Analyst', packageLPA: '11.5 LPA', minCgpa: 7.5, eligibleBranches: 'CSE, IT', driveDate: '2026-10-27' },
-          { id: 3, companyName: 'Amazon AWS', roleName: 'Cloud Support Associate', packageLPA: '16.0 LPA', minCgpa: 8.0, eligibleBranches: 'CSE, IT', driveDate: '2026-11-05' }
-        ],
-        notices: [
-          { id: 1, title: 'Mid-Semester Examinations Schedule', category: 'EXAM', postedDate: '2026-10-02', content: 'Mid-Term examinations commence 15th October 2026.' },
-          { id: 2, title: 'National AI Hackathon 2026', category: 'EVENT', postedDate: '2026-10-01', content: 'Register your teams for the 36-hour Generative AI Hackathon.' },
-          { id: 3, title: 'TCS Digital Recruitment Drive', category: 'PLACEMENT', postedDate: '2026-09-30', content: 'Eligible students must register before 10th October.' }
-        ],
-        student: {
-          rollNumber: "24EG106A18",
-          branch: "Computer Science & Engineering",
-          semester: 6,
-          section: "A",
-          cgpa: 8.45,
-          attendancePercentage: 82,
-          backlogs: 0
-        }
-      });
-    } finally {
-      setLoading(false);
+      console.warn("Backend API call deferred, rendered local seed data:", err);
     }
   };
 
@@ -120,7 +140,7 @@ function App() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setCurrentUser(null);
-    setDashboardData(null);
+    setDashboardData(DEFAULT_SEEDED_DATA);
     setActiveSidebarItem('dashboard');
   };
 
@@ -177,6 +197,52 @@ function App() {
   };
 
   const navItems = getNavItems(userRole);
+
+  const renderDashboardView = () => {
+    switch (userRole) {
+      case 'STUDENT':
+        return (
+          <StudentDashboardView 
+            data={dashboardData} 
+            activeSidebarItem={activeSidebarItem} 
+            setActiveSidebarItem={setActiveSidebarItem}
+          />
+        );
+      case 'FACULTY':
+        return (
+          <FacultyDashboardView 
+            data={dashboardData} 
+            activeSidebarItem={activeSidebarItem} 
+            setActiveSidebarItem={setActiveSidebarItem}
+          />
+        );
+      case 'HOD':
+        return (
+          <HodDashboardView 
+            data={dashboardData} 
+            activeSidebarItem={activeSidebarItem} 
+            setActiveSidebarItem={setActiveSidebarItem}
+          />
+        );
+      case 'PLACEMENT':
+        return (
+          <PlacementDashboardView 
+            data={dashboardData} 
+            activeSidebarItem={activeSidebarItem} 
+            setActiveSidebarItem={setActiveSidebarItem}
+          />
+        );
+      case 'ADMIN':
+      default:
+        return (
+          <AdminDashboardView 
+            data={dashboardData} 
+            activeSidebarItem={activeSidebarItem} 
+            setActiveSidebarItem={setActiveSidebarItem}
+          />
+        );
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex font-sans text-[#1E293B]">
@@ -305,50 +371,7 @@ function App() {
 
         {/* Page Body */}
         <main className="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto">
-          {loading ? (
-            <div className="py-24 text-center text-[#64748B]">
-              <div className="w-8 h-8 border-3 border-[#2563EB] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-              Loading institutional dashboard data...
-            </div>
-          ) : (
-            <>
-              {userRole === 'STUDENT' && (
-                <StudentDashboardView 
-                  data={dashboardData} 
-                  activeSidebarItem={activeSidebarItem} 
-                  setActiveSidebarItem={setActiveSidebarItem}
-                />
-              )}
-              {userRole === 'FACULTY' && (
-                <FacultyDashboardView 
-                  data={dashboardData} 
-                  activeSidebarItem={activeSidebarItem} 
-                  setActiveSidebarItem={setActiveSidebarItem}
-                />
-              )}
-              {userRole === 'HOD' && (
-                <HodDashboardView 
-                  data={dashboardData} 
-                  activeSidebarItem={activeSidebarItem} 
-                  setActiveSidebarItem={setActiveSidebarItem}
-                />
-              )}
-              {userRole === 'PLACEMENT' && (
-                <PlacementDashboardView 
-                  data={dashboardData} 
-                  activeSidebarItem={activeSidebarItem} 
-                  setActiveSidebarItem={setActiveSidebarItem}
-                />
-              )}
-              {userRole === 'ADMIN' && (
-                <AdminDashboardView 
-                  data={dashboardData} 
-                  activeSidebarItem={activeSidebarItem} 
-                  setActiveSidebarItem={setActiveSidebarItem}
-                />
-              )}
-            </>
-          )}
+          {renderDashboardView()}
         </main>
       </div>
 
