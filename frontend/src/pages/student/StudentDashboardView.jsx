@@ -9,10 +9,12 @@ import {
   Bell, 
   Sparkles, 
   ChevronRight,
+  User,
+  GraduationCap,
   BookOpen,
-  ArrowUpRight,
-  CheckSquare,
-  AlertCircle
+  ArrowRight,
+  ShieldCheck,
+  Building2
 } from 'lucide-react';
 import AiAssistantWidget from '../../components/ai/AiAssistantWidget';
 
@@ -35,18 +37,21 @@ function StudentDashboardView({ data, activeSidebarItem, setActiveSidebarItem })
   };
 
   const assignments = data?.assignments || [];
-  const placementDrives = data?.placementDrives || [];
+  const placementDrives = data?.placementDrives || data?.drives || [];
   const notices = data?.notices || [];
 
   return (
     <div className="space-y-6">
-      {/* 1. Header Banner */}
+      
+      {/* 1. Profile / Navigation Top Subheader */}
       <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#2563EB] mb-1">
-            <span>B.Tech CSE • Semester {student.semester}</span>
+            <span>Student Workspace</span>
             <span>•</span>
             <span className="font-mono text-[#64748B]">{student.rollNumber}</span>
+            <span>•</span>
+            <span className="text-[#059669]">B.Tech CSE Sem VI (Sec {student.section})</span>
           </div>
           <h2 className="text-2xl font-bold text-[#0F172A]">
             Good morning, {data?.user?.fullName || "Akshaya"} 👋
@@ -71,11 +76,14 @@ function StudentDashboardView({ data, activeSidebarItem, setActiveSidebarItem })
       {/* 2. Top Metric KPI Row: Attendance, Classes, Tasks, Notices */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Attendance */}
-        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs relative overflow-hidden">
+        <div 
+          onClick={() => setActiveSidebarItem && setActiveSidebarItem('attendance')}
+          className="bg-white border border-[#E2E8F0] hover:border-[#2563EB]/40 rounded-2xl p-5 shadow-xs relative overflow-hidden cursor-pointer transition group"
+        >
           <div className="absolute top-0 left-0 right-0 h-1 bg-[#2563EB]"></div>
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Attendance</span>
-            <div className="p-2 rounded-lg bg-[#EFF6FF] text-[#2563EB]">
+            <div className="p-2 rounded-lg bg-[#EFF6FF] text-[#2563EB] group-hover:scale-105 transition">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
@@ -88,11 +96,14 @@ function StudentDashboardView({ data, activeSidebarItem, setActiveSidebarItem })
         </div>
 
         {/* Classes Today */}
-        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs relative overflow-hidden">
+        <div 
+          onClick={() => setActiveSidebarItem && setActiveSidebarItem('timetable')}
+          className="bg-white border border-[#E2E8F0] hover:border-[#14B8A6]/40 rounded-2xl p-5 shadow-xs relative overflow-hidden cursor-pointer transition group"
+        >
           <div className="absolute top-0 left-0 right-0 h-1 bg-[#14B8A6]"></div>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Today's Classes</span>
-            <div className="p-2 rounded-lg bg-[#F0FDFA] text-[#14B8A6]">
+            <span className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Classes Today</span>
+            <div className="p-2 rounded-lg bg-[#F0FDFA] text-[#14B8A6] group-hover:scale-105 transition">
               <Calendar className="w-4 h-4" />
             </div>
           </div>
@@ -105,11 +116,14 @@ function StudentDashboardView({ data, activeSidebarItem, setActiveSidebarItem })
         </div>
 
         {/* Tasks / Assignments */}
-        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs relative overflow-hidden">
+        <div 
+          onClick={() => setActiveSidebarItem && setActiveSidebarItem('assignments')}
+          className="bg-white border border-[#E2E8F0] hover:border-[#F59E0B]/40 rounded-2xl p-5 shadow-xs relative overflow-hidden cursor-pointer transition group"
+        >
           <div className="absolute top-0 left-0 right-0 h-1 bg-[#F59E0B]"></div>
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Pending Tasks</span>
-            <div className="p-2 rounded-lg bg-[#FFFBEB] text-[#F59E0B]">
+            <div className="p-2 rounded-lg bg-[#FFFBEB] text-[#F59E0B] group-hover:scale-105 transition">
               <Clock className="w-4 h-4" />
             </div>
           </div>
@@ -121,12 +135,15 @@ function StudentDashboardView({ data, activeSidebarItem, setActiveSidebarItem })
           </div>
         </div>
 
-        {/* Campus Notices */}
-        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs relative overflow-hidden">
+        {/* Notices */}
+        <div 
+          onClick={() => setActiveSidebarItem && setActiveSidebarItem('notices')}
+          className="bg-white border border-[#E2E8F0] hover:border-[#0F172A]/40 rounded-2xl p-5 shadow-xs relative overflow-hidden cursor-pointer transition group"
+        >
           <div className="absolute top-0 left-0 right-0 h-1 bg-[#0F172A]"></div>
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Circulars</span>
-            <div className="p-2 rounded-lg bg-[#F1F5F9] text-[#0F172A]">
+            <div className="p-2 rounded-lg bg-[#F1F5F9] text-[#0F172A] group-hover:scale-105 transition">
               <Bell className="w-4 h-4" />
             </div>
           </div>
@@ -139,29 +156,98 @@ function StudentDashboardView({ data, activeSidebarItem, setActiveSidebarItem })
         </div>
       </div>
 
-      {/* 3. Main Split Content Area */}
-      {currentView === 'ai' ? (
-        <AiAssistantWidget />
-      ) : currentView === 'attendance' ? (
-        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-4">
-          <h3 className="text-base font-bold text-[#0F172A]">Attendance & Academic Eligibility</h3>
+      {/* 3. Conditional Page Render based on currentView */}
+      
+      {/* CAMPUS AI PAGE */}
+      {currentView === 'ai' && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-bold text-[#0F172A]">Campus AI Assistant</h3>
+              <p className="text-xs text-[#64748B]">Context-aware RAG assistant indexed with university handbook and syllabus</p>
+            </div>
+          </div>
+          <AiAssistantWidget isCompact={false} />
+        </div>
+      )}
+
+      {/* MY PROFILE PAGE */}
+      {currentView === 'profile' && (
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-6">
+          <div className="flex items-center gap-4 pb-6 border-b border-[#F1F5F9]">
+            <div className="w-16 h-16 rounded-2xl bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center font-bold text-2xl border border-[#DBEAFE]">
+              {data?.user?.fullName?.charAt(0) || "A"}
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-[#0F172A]">{data?.user?.fullName || "Akshaya Narayana"}</h3>
+              <p className="text-xs text-[#64748B] font-mono mt-0.5">Roll No: {student.rollNumber} • {student.branch}</p>
+              <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#DCFCE7] text-[#16A34A] border border-[#BBF7D0]">
+                ● Regular Student • Semester VI
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+              <span className="text-xs font-bold text-[#64748B] uppercase">Academic CGPA</span>
+              <div className="text-2xl font-bold text-[#2563EB] mt-1">{student.cgpa} / 10.0</div>
+              <p className="text-xs text-[#64748B] mt-1">Distinction Grade</p>
+            </div>
+            <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+              <span className="text-xs font-bold text-[#64748B] uppercase">Attendance Percentage</span>
+              <div className="text-2xl font-bold text-[#16A34A] mt-1">{student.attendancePercentage}%</div>
+              <p className="text-xs text-[#64748B] mt-1">Exam Hall Ticket Permitted</p>
+            </div>
+            <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+              <span className="text-xs font-bold text-[#64748B] uppercase">Active Backlogs</span>
+              <div className="text-2xl font-bold text-[#0F172A] mt-1">{student.backlogs}</div>
+              <p className="text-xs text-[#16A34A] mt-1">All Clear</p>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-2 text-xs">
+            <div className="font-bold text-[#0F172A] text-sm mb-2">Student Information Record</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[#475569]">
+              <div>Email: <span className="text-[#0F172A] font-semibold">{data?.user?.email || "akshaya@campus.edu"}</span></div>
+              <div>Department: <span className="text-[#0F172A] font-semibold">{student.branch}</span></div>
+              <div>Section: <span className="text-[#0F172A] font-semibold">Section {student.section}</span></div>
+              <div>Academic Year: <span className="text-[#0F172A] font-semibold">2026</span></div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ATTENDANCE PAGE */}
+      {currentView === 'attendance' && (
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-bold text-[#0F172A]">Attendance & Academic Eligibility</h3>
+              <p className="text-xs text-[#64748B]">University Regulation Clause 4.2: Minimum 75% aggregate attendance required for Semester-End Exams.</p>
+            </div>
+            <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#DCFCE7] text-[#16A34A] border border-[#BBF7D0]">
+              ● Overall: {student.attendancePercentage}% (ELIGIBLE)
+            </span>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              { subject: 'Deep Learning', present: 28, total: 32, pct: 87.5 },
-              { subject: 'Web Programming & Microservices', present: 26, total: 30, pct: 86.6 },
-              { subject: 'Cloud Computing & DevOps', present: 22, total: 30, pct: 73.3 }
+              { subject: 'Deep Learning', present: 28, total: 32, pct: 87.5, faculty: 'Prof. Rajesh Smith' },
+              { subject: 'Web Programming & Microservices', present: 26, total: 30, pct: 86.6, faculty: 'Dr. K. V. Rao' },
+              { subject: 'Cloud Computing & DevOps', present: 22, total: 30, pct: 73.3, faculty: 'Prof. Ananya Sen' }
             ].map((sub, i) => (
               <div key={i} className="p-5 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0]">
                 <div className="text-sm font-bold text-[#0F172A]">{sub.subject}</div>
-                <div className="text-2xl font-bold mt-2" style={{ color: sub.pct >= 75 ? '#16A34A' : '#DC2626' }}>
+                <div className="text-xs text-[#64748B] mt-0.5">{sub.faculty}</div>
+                <div className="text-2xl font-bold mt-3" style={{ color: sub.pct >= 75 ? '#16A34A' : '#DC2626' }}>
                   {sub.pct}%
                 </div>
                 <div className="text-xs text-[#64748B] mt-1">
-                  Attended {sub.present} of {sub.total} sessions
+                  Attended {sub.present} of {sub.total} classes
                 </div>
                 <div className="mt-3 w-full bg-[#E2E8F0] h-2 rounded-full overflow-hidden">
                   <div 
-                    className="h-full rounded-full" 
+                    className="h-full rounded-full transition-all" 
                     style={{ 
                       width: `${sub.pct}%`, 
                       backgroundColor: sub.pct >= 75 ? '#16A34A' : '#DC2626' 
@@ -172,7 +258,49 @@ function StudentDashboardView({ data, activeSidebarItem, setActiveSidebarItem })
             ))}
           </div>
         </div>
-      ) : currentView === 'assignments' ? (
+      )}
+
+      {/* TIMETABLE PAGE */}
+      {currentView === 'timetable' && (
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-4">
+          <h3 className="text-base font-bold text-[#0F172A]">Weekly Lecture Timetable</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs text-[#1E293B]">
+              <thead className="bg-[#F8FAFC] text-[#64748B] uppercase font-bold border-b border-[#E2E8F0]">
+                <tr>
+                  <th className="p-3.5">Day</th>
+                  <th className="p-3.5">09:00 - 10:00</th>
+                  <th className="p-3.5">10:00 - 11:00</th>
+                  <th className="p-3.5">11:00 - 12:00</th>
+                  <th className="p-3.5">01:00 - 02:00</th>
+                  <th className="p-3.5">02:00 - 04:00</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#F1F5F9]">
+                {[
+                  { day: 'Monday', c1: 'Deep Learning (LH-302)', c2: 'Library / Self Study', c3: 'Web Programming (Lab 4)', c4: 'Break', c5: 'Cloud Computing Lab' },
+                  { day: 'Tuesday', c1: 'Cloud Computing (LH-201)', c2: 'Deep Learning (LH-302)', c3: 'Cyber Security (LH-101)', c4: 'Break', c5: 'Web Programming' },
+                  { day: 'Wednesday', c1: 'Web Programming', c2: 'Cloud Computing', c3: 'Deep Learning', c4: 'Break', c5: 'Deep Learning Lab' },
+                  { day: 'Thursday', c1: 'Cyber Security', c2: 'Technical Seminar', c3: 'Web Programming', c4: 'Break', c5: 'Placement Training' },
+                  { day: 'Friday', c1: 'Deep Learning', c2: 'Cloud Computing', c3: 'Mentoring Session', c4: 'Break', c5: 'Mini Project Lab' },
+                ].map((row, idx) => (
+                  <tr key={idx} className="hover:bg-[#F8FAFC]">
+                    <td className="p-3.5 font-bold text-[#0F172A]">{row.day}</td>
+                    <td className="p-3.5 text-[#2563EB]">{row.c1}</td>
+                    <td className="p-3.5">{row.c2}</td>
+                    <td className="p-3.5 text-[#2563EB]">{row.c3}</td>
+                    <td className="p-3.5 text-[#64748B]">{row.c4}</td>
+                    <td className="p-3.5 font-medium">{row.c5}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* ASSIGNMENTS PAGE */}
+      {currentView === 'assignments' && (
         <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-4">
           <h3 className="text-base font-bold text-[#0F172A]">Coursework & Assignments</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -193,9 +321,21 @@ function StudentDashboardView({ data, activeSidebarItem, setActiveSidebarItem })
             ))}
           </div>
         </div>
-      ) : currentView === 'placements' ? (
+      )}
+
+      {/* PLACEMENTS PAGE */}
+      {currentView === 'placements' && (
         <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-4">
-          <h3 className="text-base font-bold text-[#0F172A]">Active Placement Opportunities</h3>
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-base font-bold text-[#0F172A]">Active Placement Opportunities</h3>
+              <p className="text-xs text-[#64748B]">Companies offering campus recruitment drives for B.Tech CSE 2026 batch</p>
+            </div>
+            <span className="text-xs font-bold text-[#16A34A] bg-[#DCFCE7] px-3 py-1 rounded-full border border-[#BBF7D0]">
+              Eligible for all active drives
+            </span>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {placementDrives.map((d) => (
               <div key={d.id} className="p-5 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex flex-col justify-between">
@@ -209,10 +349,9 @@ function StudentDashboardView({ data, activeSidebarItem, setActiveSidebarItem })
                   <div className="text-xs text-[#2563EB] font-bold mt-1">{d.roleName}</div>
                   <div className="mt-3 space-y-1.5 text-xs text-[#64748B]">
                     <div>Minimum CGPA: <span className="text-[#0F172A] font-bold">{d.minCgpa}</span></div>
-                    <div>Backlog Cutoff: <span className="text-[#0F172A] font-bold">{d.maxBacklogs}</span></div>
+                    <div>Backlog Cutoff: <span className="text-[#0F172A] font-bold">0</span></div>
                     <div>Eligible: <span className="text-[#0F172A]">{d.eligibleBranches}</span></div>
-                    <div>Location: <span className="text-[#0F172A]">{d.jobLocation}</span></div>
-                    <div>Date: <span className="text-[#0F172A] font-medium">{d.driveDate}</span></div>
+                    <div>Drive Date: <span className="text-[#0F172A] font-medium">{d.driveDate}</span></div>
                   </div>
                 </div>
                 <button className="mt-4 w-full py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl text-xs font-bold cursor-pointer transition shadow-xs">
@@ -222,10 +361,33 @@ function StudentDashboardView({ data, activeSidebarItem, setActiveSidebarItem })
             ))}
           </div>
         </div>
-      ) : (
-        /* Default Dashboard view: Split into Schedule + Embedded Campus AI */
+      )}
+
+      {/* NOTICES PAGE */}
+      {currentView === 'notices' && (
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-4">
+          <h3 className="text-base font-bold text-[#0F172A]">Campus Announcements & Circulars</h3>
+          <div className="space-y-3">
+            {notices.map((n) => (
+              <div key={n.id} className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold uppercase px-2.5 py-1 rounded bg-[#EFF6FF] text-[#2563EB] border border-[#DBEAFE]">
+                    {n.category}
+                  </span>
+                  <span className="text-xs text-[#64748B]">{n.postedDate}</span>
+                </div>
+                <h4 className="text-sm font-bold text-[#0F172A] mt-2">{n.title}</h4>
+                <p className="text-xs text-[#475569] mt-1 leading-relaxed">{n.content}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* DEFAULT DASHBOARD: 2-Column Split (Schedule & Tasks on Left, Compact Campus AI on Right) */}
+      {currentView === 'overview' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Column (7 cols): Today's Schedule & Quick Action Cards */}
+          {/* Left Column (7 cols): Schedule + Assignments */}
           <div className="lg:col-span-7 space-y-6">
             
             {/* Today's Schedule */}
@@ -292,39 +454,17 @@ function StudentDashboardView({ data, activeSidebarItem, setActiveSidebarItem })
               </div>
             </div>
 
-            {/* Campus Notices */}
-            <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-bold text-[#0F172A] uppercase tracking-wider flex items-center gap-2">
-                  <Bell className="w-4 h-4 text-[#0F172A]" />
-                  Campus Announcements
-                </h3>
-              </div>
-              <div className="space-y-3">
-                {notices.map((n) => (
-                  <div key={n.id} className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-[#EFF6FF] text-[#2563EB] border border-[#DBEAFE]">
-                        {n.category}
-                      </span>
-                      <span className="text-[10px] text-[#64748B]">{n.postedDate}</span>
-                    </div>
-                    <div className="text-xs font-bold text-[#1E293B] mt-1.5">{n.title}</div>
-                    <div className="text-xs text-[#64748B] mt-1 line-clamp-2">{n.content}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
 
-          {/* Right Column (5 cols): Embedded Campus AI Assistant directly on dashboard */}
+          {/* Right Column (5 cols): Compact Campus AI Widget directly on main dashboard */}
           <div className="lg:col-span-5">
             <div className="sticky top-24">
-              <AiAssistantWidget />
+              <AiAssistantWidget isCompact={true} />
             </div>
           </div>
         </div>
       )}
+
     </div>
   );
 }

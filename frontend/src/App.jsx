@@ -157,7 +157,9 @@ function App() {
     if (role === 'STUDENT') {
       return [
         ...common,
+        { id: 'profile', label: 'My Profile', icon: Users },
         { id: 'attendance', label: 'Attendance', icon: CheckSquare },
+        { id: 'timetable', label: 'Timetable', icon: Calendar },
         { id: 'assignments', label: 'Assignments', icon: FileText },
         { id: 'placements', label: 'Placements', icon: Briefcase },
         { id: 'notices', label: 'Notices', icon: Bell },
@@ -359,12 +361,22 @@ function App() {
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="hidden sm:inline-block px-3 py-1 rounded-full text-xs font-bold bg-[#DCFCE7] text-[#16A34A] border border-[#BBF7D0]">
-              ● ONLINE
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#DCFCE7] text-[#16A34A] border border-[#BBF7D0]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse"></span>
+              ONLINE
             </span>
-            <div className="text-right hidden md:block">
-              <span className="text-xs font-bold text-[#0F172A] block">{userRole}</span>
-              <span className="text-[10px] text-[#64748B] font-mono">{currentUser.username}</span>
+            <div className="flex items-center gap-2.5 pl-2 border-l border-[#E2E8F0]">
+              <div className="w-8 h-8 rounded-full bg-[#EFF6FF] border border-[#DBEAFE] text-[#2563EB] font-bold text-xs flex items-center justify-center">
+                {(currentUser.fullName || currentUser.username || "A").charAt(0).toUpperCase()}
+              </div>
+              <div className="text-left hidden sm:block">
+                <span className="text-xs font-bold text-[#0F172A] block leading-tight">
+                  {currentUser.fullName || currentUser.username}
+                </span>
+                <span className="text-[10px] text-[#64748B] font-mono">
+                  {userRole}
+                </span>
+              </div>
             </div>
           </div>
         </header>
