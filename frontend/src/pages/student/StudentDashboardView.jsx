@@ -1,22 +1,27 @@
 import React, { useState } from 'react';
 import { 
-  GraduationCap, 
-  BookOpen, 
+  CheckCircle2, 
+  Award, 
+  Clock, 
+  Briefcase, 
   Calendar, 
   FileText, 
-  Briefcase, 
   Bell, 
   Sparkles, 
-  CheckCircle2, 
-  Clock, 
-  Award, 
-  ArrowUpRight,
-  ChevronRight
+  ChevronRight,
+  BookOpen,
+  ArrowUpRight
 } from 'lucide-react';
 import AiAssistantWidget from '../../components/ai/AiAssistantWidget';
 
-function StudentDashboardView({ data }) {
-  const [activeTab, setActiveTab] = useState('overview');
+function StudentDashboardView({ data, activeSidebarItem }) {
+  const [internalTab, setInternalTab] = useState('overview');
+  
+  // Use active sidebar item if clicked, or fallback to internalTab
+  const currentView = activeSidebarItem && activeSidebarItem !== 'dashboard' 
+    ? activeSidebarItem 
+    : internalTab;
+
   const student = data?.student || {
     rollNumber: "24EG106A18",
     branch: "Computer Science & Engineering",
@@ -33,136 +38,151 @@ function StudentDashboardView({ data }) {
 
   return (
     <div className="space-y-6">
-      {/* Welcome Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-900/60 via-purple-900/40 to-slate-900 border border-indigo-800/40 p-6 md:p-8">
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-1">
-              <span>B.Tech CSE • Semester {student.semester}</span>
-              <span>•</span>
-              <span className="font-mono">{student.rollNumber}</span>
-            </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
-              Welcome back, {data?.user?.fullName || "Akshaya"} 👋
-            </h2>
-            <p className="text-slate-300 text-sm mt-1">
-              All systems online. Your academic profile is in good standing.
-            </p>
+      {/* Header Banner */}
+      <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#2563EB] mb-1">
+            <span>B.Tech CSE • Semester {student.semester}</span>
+            <span>•</span>
+            <span className="font-mono text-[#64748B]">{student.rollNumber}</span>
           </div>
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={() => setActiveTab('ai')}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-semibold shadow-lg shadow-indigo-500/20 hover:opacity-95 transition cursor-pointer"
-            >
-              <Sparkles className="w-4 h-4" />
-              Ask AI Campus Bot
-            </button>
-          </div>
+          <h2 className="text-2xl font-bold text-[#0F172A]">
+            Good Morning, {data?.user?.fullName || "Akshaya"} 👋
+          </h2>
+          <p className="text-xs sm:text-sm text-[#64748B] mt-1">
+            Here is your academic overview for today. All coursework and attendance meet university regulations.
+          </p>
         </div>
+
+        <button 
+          onClick={() => setInternalTab('ai')}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#F0FDFA] hover:bg-[#CCFBF1] text-[#0F766E] border border-[#14B8A6]/30 text-xs font-bold transition cursor-pointer self-start md:self-auto shadow-2xs"
+        >
+          <Sparkles className="w-4 h-4 text-[#14B8A6]" />
+          Ask Campus AI Assistant
+        </button>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-slate-900/70 border border-slate-800 rounded-xl p-5">
+      {/* KPI Cards: White Cards with subtle colored accents */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Attendance - Blue Accent */}
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-[#2563EB]"></div>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-400">Attendance</span>
-            <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400">
+            <span className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Attendance</span>
+            <div className="p-2 rounded-lg bg-[#EFF6FF] text-[#2563EB]">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-bold text-white">{student.attendancePercentage}%</div>
-            <div className="text-[11px] text-emerald-400 font-medium mt-1">Eligible for Exams (Min 75%)</div>
+            <div className="text-2xl sm:text-3xl font-bold text-[#0F172A]">{student.attendancePercentage}%</div>
+            <div className="text-[11px] font-medium text-[#16A34A] mt-1 flex items-center gap-1">
+              <span>● Above 75% Cutoff</span>
+            </div>
           </div>
         </div>
 
-        <div className="bg-slate-900/70 border border-slate-800 rounded-xl p-5">
+        {/* CGPA - Teal Accent */}
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-[#14B8A6]"></div>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-400">CGPA</span>
-            <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
+            <span className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">CGPA</span>
+            <div className="p-2 rounded-lg bg-[#F0FDFA] text-[#14B8A6]">
               <Award className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-bold text-white">{student.cgpa}</div>
-            <div className="text-[11px] text-indigo-400 font-medium mt-1">Distinction Grade</div>
+            <div className="text-2xl sm:text-3xl font-bold text-[#0F172A]">{student.cgpa}</div>
+            <div className="text-[11px] font-medium text-[#2563EB] mt-1">
+              First Class with Distinction
+            </div>
           </div>
         </div>
 
-        <div className="bg-slate-900/70 border border-slate-800 rounded-xl p-5">
+        {/* Assignments - Amber Accent */}
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-[#F59E0B]"></div>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-400">Active Assignments</span>
-            <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400">
+            <span className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Assignments</span>
+            <div className="p-2 rounded-lg bg-[#FFFBEB] text-[#F59E0B]">
               <Clock className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-bold text-white">{assignments.length}</div>
-            <div className="text-[11px] text-amber-400 font-medium mt-1">Due this week</div>
+            <div className="text-2xl sm:text-3xl font-bold text-[#0F172A]">{assignments.length} Pending</div>
+            <div className="text-[11px] font-medium text-[#F59E0B] mt-1">
+              Due within this week
+            </div>
           </div>
         </div>
 
-        <div className="bg-slate-900/70 border border-slate-800 rounded-xl p-5">
+        {/* Placement Drives - Navy Accent */}
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-[#0F172A]"></div>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-400">Placement Drives</span>
-            <div className="p-2 rounded-lg bg-purple-500/10 text-purple-400">
+            <span className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Placement Drives</span>
+            <div className="p-2 rounded-lg bg-[#F1F5F9] text-[#0F172A]">
               <Briefcase className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-bold text-white">{placementDrives.length}</div>
-            <div className="text-[11px] text-purple-400 font-medium mt-1">Eligible to apply</div>
+            <div className="text-2xl sm:text-3xl font-bold text-[#0F172A]">{placementDrives.length} Active</div>
+            <div className="text-[11px] font-medium text-[#16A34A] mt-1">
+              Profile Eligible
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Tabs / Switcher */}
-      <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
+      {/* Tabs */}
+      <div className="flex items-center gap-2 border-b border-[#E2E8F0] pb-2">
         {['overview', 'ai', 'assignments', 'placements', 'notices'].map((tab) => (
           <button
             key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-lg text-xs font-semibold capitalize transition cursor-pointer ${
-              activeTab === tab 
-                ? 'bg-indigo-600 text-white shadow-md' 
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+            onClick={() => setInternalTab(tab)}
+            className={`px-4 py-2 rounded-xl text-xs font-bold capitalize transition cursor-pointer ${
+              currentView === tab 
+                ? 'bg-[#2563EB] text-white shadow-xs' 
+                : 'text-[#64748B] hover:text-[#0F172A] hover:bg-white'
             }`}
           >
-            {tab === 'ai' ? '🤖 AI Assistant' : tab}
+            {tab === 'ai' ? '✦ Campus AI Assistant' : tab}
           </button>
         ))}
       </div>
 
-      {/* Tab Content */}
-      {activeTab === 'ai' && (
-        <AiAssistantWidget />
-      )}
+      {/* Main View Router */}
+      {currentView === 'ai' && <AiAssistantWidget />}
 
-      {activeTab === 'overview' && (
+      {currentView === 'overview' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column: Today's Classes & Assignments */}
+          {/* Left Column: Today's Lectures & Assignments */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Timetable / Classes Today */}
-            <div className="bg-slate-900/70 border border-slate-800 rounded-xl p-6">
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2 mb-4">
-                <Calendar className="w-4 h-4 text-indigo-400" />
-                Today's Academic Schedule
-              </h3>
+            
+            {/* Today's Classes */}
+            <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-bold text-[#0F172A] uppercase tracking-wider flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-[#2563EB]" />
+                  Today's Lecture Schedule
+                </h3>
+                <span className="text-xs text-[#64748B] font-medium">B.Tech VI Sem • Room Block B</span>
+              </div>
               <div className="space-y-3">
                 {[
-                  { time: '09:00 - 10:00', subject: 'Deep Learning', room: 'LH-302', faculty: 'Prof. Rajesh Smith' },
-                  { time: '11:00 - 12:00', subject: 'Web Programming & Microservices', room: 'Lab 4', faculty: 'Dr. K. V. Rao' },
-                  { time: '02:00 - 03:00', subject: 'Cloud Computing & DevOps', room: 'LH-201', faculty: 'Prof. Ananya Sen' }
+                  { time: '09:00 - 10:00 AM', subject: 'Deep Learning', room: 'LH-302', faculty: 'Prof. Rajesh Smith' },
+                  { time: '11:00 - 12:00 PM', subject: 'Web Programming & Microservices', room: 'Lab 4', faculty: 'Dr. K. V. Rao' },
+                  { time: '02:00 - 03:00 PM', subject: 'Cloud Computing & DevOps', room: 'LH-201', faculty: 'Prof. Ananya Sen' }
                 ].map((c, i) => (
-                  <div key={i} className="flex items-center justify-between p-3.5 rounded-lg bg-slate-950/60 border border-slate-800/60">
+                  <div key={i} className="flex items-center justify-between p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-10 rounded-full bg-indigo-500"></div>
+                      <div className="w-1.5 h-10 rounded-full bg-[#2563EB]"></div>
                       <div>
-                        <div className="text-sm font-semibold text-white">{c.subject}</div>
-                        <div className="text-xs text-slate-400">{c.faculty} • {c.room}</div>
+                        <div className="text-sm font-bold text-[#1E293B]">{c.subject}</div>
+                        <div className="text-xs text-[#64748B]">{c.faculty} • {c.room}</div>
                       </div>
                     </div>
-                    <span className="text-xs font-mono text-slate-300 bg-slate-800/60 px-2.5 py-1 rounded">
+                    <span className="text-xs font-mono font-semibold text-[#2563EB] bg-[#EFF6FF] px-2.5 py-1 rounded-lg border border-[#DBEAFE]">
                       {c.time}
                     </span>
                   </div>
@@ -170,27 +190,30 @@ function StudentDashboardView({ data }) {
               </div>
             </div>
 
-            {/* Assignments Preview */}
-            <div className="bg-slate-900/70 border border-slate-800 rounded-xl p-6">
+            {/* Course Assignments */}
+            <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-amber-400" />
-                  Pending Coursework
+                <h3 className="text-sm font-bold text-[#0F172A] uppercase tracking-wider flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-[#F59E0B]" />
+                  Active Assignments
                 </h3>
-                <button onClick={() => setActiveTab('assignments')} className="text-xs text-indigo-400 hover:underline flex items-center gap-1">
-                  View All <ChevronRight className="w-3 h-3" />
+                <button 
+                  onClick={() => setInternalTab('assignments')} 
+                  className="text-xs font-bold text-[#2563EB] hover:text-[#1D4ED8] flex items-center gap-1 cursor-pointer"
+                >
+                  View All ({assignments.length}) <ChevronRight className="w-3.5 h-3.5" />
                 </button>
               </div>
               <div className="space-y-3">
                 {assignments.map((a) => (
-                  <div key={a.id} className="p-4 rounded-lg bg-slate-950/60 border border-slate-800/60 flex items-center justify-between">
+                  <div key={a.id} className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                      <div className="text-xs font-semibold text-indigo-400">{a.subject}</div>
-                      <div className="text-sm font-medium text-white">{a.title}</div>
-                      <div className="text-xs text-slate-400 mt-1">Due Date: {a.dueDate} • {a.totalMarks} Marks</div>
+                      <span className="text-xs font-bold text-[#2563EB]">{a.subject}</span>
+                      <h4 className="text-sm font-bold text-[#1E293B] mt-0.5">{a.title}</h4>
+                      <p className="text-xs text-[#64748B] mt-1">Due: {a.dueDate} • Maximum Score: {a.totalMarks} Marks</p>
                     </div>
-                    <button className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium cursor-pointer">
-                      Submit Work
+                    <button className="px-3.5 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-semibold self-start sm:self-auto cursor-pointer transition shadow-xs">
+                      Submit Solution
                     </button>
                   </div>
                 ))}
@@ -198,44 +221,48 @@ function StudentDashboardView({ data }) {
             </div>
           </div>
 
-          {/* Right Column: AI Quick Widget & Campus Notices */}
+          {/* Right Column: AI Assistant Card + Circulars */}
           <div className="space-y-6">
-            {/* Quick AI Trigger Card */}
-            <div className="p-5 rounded-xl bg-gradient-to-br from-indigo-950/40 via-purple-950/20 to-slate-900 border border-indigo-900/40">
-              <div className="flex items-center gap-2 text-indigo-400 text-xs font-bold uppercase">
-                <Sparkles className="w-4 h-4" /> AI Assistant Available
+            {/* AI Assistant Spotlight Card with Teal Styling */}
+            <div className="bg-[#F0FDFA] border border-[#CCFBF1] rounded-2xl p-6 shadow-xs">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#0F766E] mb-2">
+                <Sparkles className="w-4 h-4 text-[#14B8A6]" />
+                Institutional AI Assistant
               </div>
-              <h4 className="text-sm font-semibold text-white mt-2">
-                Need immediate answers about exams or attendance?
+              <h4 className="text-base font-bold text-[#0F172A]">
+                Have questions regarding attendance or exams?
               </h4>
-              <p className="text-xs text-slate-400 mt-1">
-                Our RAG engine is indexed with your university academic regulations.
+              <p className="text-xs text-[#64748B] mt-1.5 leading-relaxed">
+                The Campus RAG engine can clarify your attendance eligibility, semester dates, and placement policies instantly.
               </p>
               <button 
-                onClick={() => setActiveTab('ai')}
-                className="mt-4 w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-medium flex items-center justify-center gap-2 cursor-pointer shadow"
+                onClick={() => setInternalTab('ai')}
+                className="mt-4 w-full py-2.5 bg-[#14B8A6] hover:bg-[#0D9488] text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer shadow-sm"
               >
-                Open Campus Assistant
+                <span>Launch Campus AI Chat</span>
+                <ChevronRight className="w-4 h-4" />
               </button>
             </div>
 
             {/* Campus Notices */}
-            <div className="bg-slate-900/70 border border-slate-800 rounded-xl p-6">
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2 mb-4">
-                <Bell className="w-4 h-4 text-purple-400" />
-                Latest Announcements
-              </h3>
+            <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-bold text-[#0F172A] uppercase tracking-wider flex items-center gap-2">
+                  <Bell className="w-4 h-4 text-[#2563EB]" />
+                  Campus Circulars
+                </h3>
+              </div>
               <div className="space-y-3">
                 {notices.map((n) => (
-                  <div key={n.id} className="p-3 rounded-lg bg-slate-950/60 border border-slate-800/60">
+                  <div key={n.id} className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-400">
+                      <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-[#EFF6FF] text-[#2563EB] border border-[#DBEAFE]">
                         {n.category}
                       </span>
-                      <span className="text-[10px] text-slate-500">{n.postedDate}</span>
+                      <span className="text-[10px] text-[#64748B]">{n.postedDate}</span>
                     </div>
-                    <div className="text-xs font-semibold text-white mt-1.5">{n.title}</div>
-                    <div className="text-xs text-slate-400 mt-1 line-clamp-2">{n.content}</div>
+                    <div className="text-xs font-bold text-[#1E293B] mt-1.5">{n.title}</div>
+                    <div className="text-xs text-[#64748B] mt-1 line-clamp-2">{n.content}</div>
                   </div>
                 ))}
               </div>
@@ -244,20 +271,20 @@ function StudentDashboardView({ data }) {
         </div>
       )}
 
-      {activeTab === 'assignments' && (
-        <div className="bg-slate-900/70 border border-slate-800 rounded-xl p-6 space-y-4">
-          <h3 className="text-base font-bold text-white">Course Assignments & Labs</h3>
+      {currentView === 'assignments' && (
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-4">
+          <h3 className="text-base font-bold text-[#0F172A]">Coursework & Laboratory Assignments</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {assignments.map((a) => (
-              <div key={a.id} className="p-5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between">
+              <div key={a.id} className="p-5 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex flex-col justify-between">
                 <div>
-                  <span className="text-xs font-semibold text-indigo-400">{a.subject}</span>
-                  <h4 className="text-sm font-bold text-white mt-1">{a.title}</h4>
-                  <p className="text-xs text-slate-300 mt-2">{a.description}</p>
+                  <span className="text-xs font-bold text-[#2563EB]">{a.subject}</span>
+                  <h4 className="text-sm font-bold text-[#0F172A] mt-1">{a.title}</h4>
+                  <p className="text-xs text-[#64748B] mt-2 leading-relaxed">{a.description}</p>
                 </div>
-                <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between">
-                  <span className="text-xs text-slate-400">Due: {a.dueDate}</span>
-                  <button className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium rounded-lg cursor-pointer">
+                <div className="mt-4 pt-3 border-t border-[#E2E8F0] flex items-center justify-between">
+                  <span className="text-xs font-semibold text-[#64748B]">Due Date: {a.dueDate}</span>
+                  <button className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold rounded-xl cursor-pointer shadow-xs transition">
                     Upload Solution
                   </button>
                 </div>
@@ -267,28 +294,29 @@ function StudentDashboardView({ data }) {
         </div>
       )}
 
-      {activeTab === 'placements' && (
-        <div className="bg-slate-900/70 border border-slate-800 rounded-xl p-6 space-y-4">
-          <h3 className="text-base font-bold text-white">Active Placement Drives</h3>
+      {currentView === 'placements' && (
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-4">
+          <h3 className="text-base font-bold text-[#0F172A]">Active Placement Drives & Eligibility</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {placementDrives.map((d) => (
-              <div key={d.id} className="p-5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between">
+              <div key={d.id} className="p-5 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-bold text-white">{d.companyName}</span>
-                    <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                    <span className="text-base font-bold text-[#0F172A]">{d.companyName}</span>
+                    <span className="text-xs font-bold text-[#16A34A] bg-[#DCFCE7] px-2 py-0.5 rounded border border-[#BBF7D0]">
                       {d.packageLPA}
                     </span>
                   </div>
-                  <div className="text-xs text-indigo-400 font-medium mt-1">{d.roleName}</div>
-                  <div className="mt-3 space-y-1 text-xs text-slate-400">
-                    <div>Min CGPA: <span className="text-slate-200 font-semibold">{d.minCgpa}</span></div>
-                    <div>Eligible: <span className="text-slate-200">{d.eligibleBranches}</span></div>
-                    <div>Location: <span className="text-slate-200">{d.jobLocation}</span></div>
-                    <div>Drive Date: <span className="text-slate-200">{d.driveDate}</span></div>
+                  <div className="text-xs text-[#2563EB] font-bold mt-1">{d.roleName}</div>
+                  <div className="mt-3 space-y-1.5 text-xs text-[#64748B]">
+                    <div>Minimum CGPA: <span className="text-[#0F172A] font-bold">{d.minCgpa}</span></div>
+                    <div>Backlog Cutoff: <span className="text-[#0F172A] font-bold">{d.maxBacklogs}</span></div>
+                    <div>Eligible Branches: <span className="text-[#0F172A]">{d.eligibleBranches}</span></div>
+                    <div>Job Location: <span className="text-[#0F172A]">{d.jobLocation}</span></div>
+                    <div>Drive Date: <span className="text-[#0F172A] font-medium">{d.driveDate}</span></div>
                   </div>
                 </div>
-                <button className="mt-4 w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold cursor-pointer transition">
+                <button className="mt-4 w-full py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl text-xs font-bold cursor-pointer transition shadow-xs">
                   Apply for Drive
                 </button>
               </div>
@@ -297,20 +325,20 @@ function StudentDashboardView({ data }) {
         </div>
       )}
 
-      {activeTab === 'notices' && (
-        <div className="bg-slate-900/70 border border-slate-800 rounded-xl p-6 space-y-4">
-          <h3 className="text-base font-bold text-white">Campus Notices & Circulars</h3>
+      {currentView === 'notices' && (
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-4">
+          <h3 className="text-base font-bold text-[#0F172A]">Institutional Circulars & Notices</h3>
           <div className="space-y-3">
             {notices.map((n) => (
-              <div key={n.id} className="p-4 rounded-xl bg-slate-950 border border-slate-800">
+              <div key={n.id} className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold uppercase px-2.5 py-1 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                  <span className="text-xs font-bold uppercase px-2.5 py-1 rounded bg-[#EFF6FF] text-[#2563EB] border border-[#DBEAFE]">
                     {n.category} • Priority: {n.priority}
                   </span>
-                  <span className="text-xs text-slate-400">{n.postedDate} • Posted by {n.postedBy}</span>
+                  <span className="text-xs text-[#64748B]">{n.postedDate} • Posted by {n.postedBy}</span>
                 </div>
-                <h4 className="text-sm font-bold text-white mt-2">{n.title}</h4>
-                <p className="text-xs text-slate-300 mt-1 leading-relaxed">{n.content}</p>
+                <h4 className="text-sm font-bold text-[#0F172A] mt-2">{n.title}</h4>
+                <p className="text-xs text-[#475569] mt-1 leading-relaxed">{n.content}</p>
               </div>
             ))}
           </div>

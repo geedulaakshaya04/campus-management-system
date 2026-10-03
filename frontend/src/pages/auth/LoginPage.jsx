@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { Shield, Sparkles, User, Lock, ArrowRight, Loader2, Info } from 'lucide-react';
+import { 
+  Sparkles, 
+  User, 
+  Lock, 
+  ArrowRight, 
+  Loader2, 
+  GraduationCap,
+  ShieldCheck,
+  CheckCircle2
+} from 'lucide-react';
 import { loginUser } from '../../services/api';
 
 function LoginPage({ onLoginSuccess }) {
@@ -9,11 +18,11 @@ function LoginPage({ onLoginSuccess }) {
   const [error, setError] = useState(null);
 
   const demoAccounts = [
-    { role: 'Student', user: 'student', pass: 'student123', color: 'from-blue-600 to-indigo-600' },
-    { role: 'Faculty', user: 'prof_smith', pass: 'faculty123', color: 'from-purple-600 to-indigo-600' },
-    { role: 'HOD', user: 'hod_cse', pass: 'hod123', color: 'from-amber-600 to-orange-600' },
-    { role: 'Placement', user: 'placement_officer', pass: 'placement123', color: 'from-emerald-600 to-teal-600' },
-    { role: 'Admin', user: 'admin', pass: 'admin123', color: 'from-rose-600 to-red-600' }
+    { label: 'Student', user: 'student', pass: 'student123', role: 'ROLE_STUDENT' },
+    { label: 'Faculty', user: 'prof_smith', pass: 'faculty123', role: 'ROLE_FACULTY' },
+    { label: 'HOD', user: 'hod_cse', pass: 'hod123', role: 'ROLE_HOD' },
+    { label: 'Placement', user: 'placement_officer', pass: 'placement123', role: 'ROLE_PLACEMENT' },
+    { label: 'Admin', user: 'admin', pass: 'admin123', role: 'ROLE_ADMIN' }
   ];
 
   const handleQuickSelect = (u, p) => {
@@ -38,71 +47,110 @@ function LoginPage({ onLoginSuccess }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center px-4 py-8">
-      <div className="w-full max-w-md">
-        {/* Header Branding */}
-        <div className="text-center mb-8">
-          <div className="inline-flex p-3 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-600 shadow-xl shadow-indigo-500/20 text-white mb-3">
-            <Sparkles className="w-8 h-8" />
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-center items-center px-4 py-8">
+      <div className="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-12 bg-white rounded-3xl border border-[#E2E8F0] shadow-xl overflow-hidden">
+        
+        {/* Left Column: Navy & Blue Branding Banner */}
+        <div className="lg:col-span-5 bg-[#0F172A] p-8 sm:p-10 text-white flex flex-col justify-between relative overflow-hidden">
+          {/* Subtle background glow */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[#2563EB]/20 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#14B8A6]/20 rounded-full blur-3xl pointer-events-none"></div>
+
+          <div className="relative z-10">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#2563EB] to-[#14B8A6] flex items-center justify-center shadow-lg shadow-[#2563EB]/30 mb-6">
+              <GraduationCap className="w-7 h-7 text-white" />
+            </div>
+
+            <span className="text-xs uppercase font-bold tracking-wider text-[#14B8A6] flex items-center gap-1.5 mb-2">
+              <Sparkles className="w-3.5 h-3.5" /> Next-Gen Digital Campus
+            </span>
+
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight">
+              AI-Powered Campus Management System
+            </h1>
+
+            <p className="text-sm text-[#94A3B8] mt-3 leading-relaxed">
+              Unified institutional core integrating academics, governance, placement analytics, and RAG-driven AI intelligence.
+            </p>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">AI-Powered Campus Management</h1>
-          <p className="text-xs text-slate-400 mt-1">Unified Digital Campus & RAG Assistant Platform</p>
+
+          <div className="relative z-10 mt-8 pt-6 border-t border-slate-800">
+            <div className="flex items-center gap-3">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#14B8A6] animate-pulse"></div>
+              <span className="text-xs text-slate-300 font-medium">Enterprise Security • Spring Boot 3 & JWT</span>
+            </div>
+          </div>
         </div>
 
-        {/* Demo Fast-Login Selector */}
-        <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 mb-6 shadow-lg">
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-300 mb-2.5">
-            <Info className="w-4 h-4 text-indigo-400" />
-            <span>Select Demo Role to Fast-Fill:</span>
+        {/* Right Column: Clean White Login Card */}
+        <div className="lg:col-span-7 p-8 sm:p-10 flex flex-col justify-center">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-[#0F172A]">Welcome Back</h2>
+            <p className="text-xs sm:text-sm text-[#64748B] mt-1">
+              Select your role or enter credentials to access your dashboard
+            </p>
           </div>
-          <div className="grid grid-cols-5 gap-1.5">
-            {demoAccounts.map((d) => (
-              <button
-                key={d.role}
-                type="button"
-                onClick={() => handleQuickSelect(d.user, d.pass)}
-                className={`px-2 py-1.5 rounded-lg text-[11px] font-semibold text-white bg-gradient-to-r ${d.color} shadow-sm transition hover:opacity-90 cursor-pointer`}
-              >
-                {d.role}
-              </button>
-            ))}
-          </div>
-        </div>
 
-        {/* Login Box */}
-        <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
+          {/* Demo Quick-Switcher */}
+          <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 mb-6">
+            <span className="block text-[11px] font-bold uppercase tracking-wider text-[#64748B] mb-2">
+              Quick Demo Fill (Instant Viva Access):
+            </span>
+            <div className="grid grid-cols-5 gap-1.5">
+              {demoAccounts.map((d) => (
+                <button
+                  key={d.label}
+                  type="button"
+                  onClick={() => handleQuickSelect(d.user, d.pass)}
+                  className={`px-2 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer border ${
+                    username === d.user 
+                      ? 'bg-[#2563EB] text-white border-[#2563EB] shadow-xs' 
+                      : 'bg-white text-[#1E293B] border-[#E2E8F0] hover:border-[#CBD5E1]'
+                  }`}
+                >
+                  {d.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs">
+              <div className="p-3.5 rounded-xl bg-[#FEF2F2] border border-[#FCA5A5] text-[#DC2626] text-xs font-medium">
                 {error}
               </div>
             )}
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Username / ID</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#475569] mb-1.5">
+                Username / Institutional ID
+              </label>
               <div className="relative">
-                <User className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+                <User className="w-4 h-4 text-[#94A3B8] absolute left-3.5 top-3" />
                 <input
                   type="text"
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
-                  placeholder="Enter username"
+                  className="w-full bg-[#F8FAFC] border border-[#CBD5E1] rounded-xl pl-10 pr-4 py-2.5 text-sm text-[#1E293B] focus:outline-none focus:border-[#2563EB] focus:bg-white transition"
+                  placeholder="e.g. student, prof_smith, admin"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Password</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#475569] mb-1.5">
+                Password
+              </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+                <Lock className="w-4 h-4 text-[#94A3B8] absolute left-3.5 top-3" />
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-[#F8FAFC] border border-[#CBD5E1] rounded-xl pl-10 pr-4 py-2.5 text-sm text-[#1E293B] focus:outline-none focus:border-[#2563EB] focus:bg-white transition"
                   placeholder="Enter password"
                 />
               </div>
@@ -111,7 +159,7 @@ function LoginPage({ onLoginSuccess }) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-indigo-600/30 transition disabled:opacity-50"
+              className="w-full mt-2 py-3 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-50 text-white font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-[#2563EB]/25 transition"
             >
               {loading ? (
                 <>
