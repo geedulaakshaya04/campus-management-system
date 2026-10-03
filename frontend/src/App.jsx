@@ -259,19 +259,39 @@ function App() {
           ) : (
             <>
               {currentUser.role === 'ROLE_STUDENT' && (
-                <StudentDashboardView data={dashboardData} activeSidebarItem={activeSidebarItem} />
+                <StudentDashboardView 
+                  data={dashboardData} 
+                  activeSidebarItem={activeSidebarItem} 
+                  setActiveSidebarItem={setActiveSidebarItem}
+                />
               )}
               {currentUser.role === 'ROLE_FACULTY' && (
-                <FacultyDashboardView data={dashboardData} activeSidebarItem={activeSidebarItem} />
+                <FacultyDashboardView 
+                  data={dashboardData} 
+                  activeSidebarItem={activeSidebarItem} 
+                  setActiveSidebarItem={setActiveSidebarItem}
+                />
               )}
               {currentUser.role === 'ROLE_HOD' && (
-                <HodDashboardView data={dashboardData} activeSidebarItem={activeSidebarItem} />
+                <HodDashboardView 
+                  data={dashboardData} 
+                  activeSidebarItem={activeSidebarItem} 
+                  setActiveSidebarItem={setActiveSidebarItem}
+                />
               )}
               {currentUser.role === 'ROLE_PLACEMENT' && (
-                <PlacementDashboardView data={dashboardData} activeSidebarItem={activeSidebarItem} />
+                <PlacementDashboardView 
+                  data={dashboardData} 
+                  activeSidebarItem={activeSidebarItem} 
+                  setActiveSidebarItem={setActiveSidebarItem}
+                />
               )}
               {currentUser.role === 'ROLE_ADMIN' && (
-                <AdminDashboardView data={dashboardData} activeSidebarItem={activeSidebarItem} />
+                <AdminDashboardView 
+                  data={dashboardData} 
+                  activeSidebarItem={activeSidebarItem} 
+                  setActiveSidebarItem={setActiveSidebarItem}
+                />
               )}
             </>
           )}
