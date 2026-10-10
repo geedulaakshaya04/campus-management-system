@@ -14,12 +14,50 @@ import {
   BookOpen,
   ArrowRight,
   ShieldCheck,
-  Building2
+  Building2,
+  Edit3,
+  Trash2
 } from 'lucide-react';
 import AiAssistantWidget from '../../components/ai/AiAssistantWidget';
+import { updateStudentProfile, deleteStudentProfile } from '../../services/api';
 
 function StudentDashboardView({ data, activeSidebarItem, setActiveSidebarItem }) {
   const [internalTab, setInternalTab] = useState('overview');
+  const [currentName, setCurrentName] = useState(data?.user?.fullName || "Akshaya Narayana");
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [newName, setNewName] = useState(currentName);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSaveName = async () => {
+    if (!newName.trim()) return;
+    try {
+      setIsSaving(true);
+      await updateStudentProfile({ fullName: newName.trim() });
+      setCurrentName(newName.trim());
+      setIsEditingName(false);
+    } catch (err) {
+      console.error("Failed to update name:", err);
+      // Fallback state update for offline demo
+      setCurrentName(newName.trim());
+      setIsEditingName(false);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteName = async () => {
+    if (!window.confirm("Are you sure you want to remove/clear your profile name?")) return;
+    try {
+      setIsSaving(true);
+      await deleteStudentProfile();
+      setCurrentName("");
+    } catch (err) {
+      console.error("Failed to clear name:", err);
+      setCurrentName("");
+    } finally {
+      setIsSaving(false);
+    }
+  };
   
   // Use active sidebar item if not default dashboard, or use internalTab
   const currentView = activeSidebarItem && activeSidebarItem !== 'dashboard' 
@@ -54,7 +92,7 @@ function StudentDashboardView({ data, activeSidebarItem, setActiveSidebarItem })
             <span className="text-[#059669]">B.Tech CSE Sem VI (Sec {student.section})</span>
           </div>
           <h2 className="text-2xl font-bold text-[#0F172A]">
-            Good morning, {data?.user?.fullName || "Akshaya"} 👋
+            Good morning, {currentName || "Student"} 👋
           </h2>
           <p className="text-xs sm:text-sm text-[#64748B] mt-1">
             Here's what's happening today in your academic portal.
@@ -174,18 +212,80 @@ function StudentDashboardView({ data, activeSidebarItem, setActiveSidebarItem })
       {/* MY PROFILE PAGE */}
       {currentView === 'profile' && (
         <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-6">
-          <div className="flex items-center gap-4 pb-6 border-b border-[#F1F5F9]">
-            <div className="w-16 h-16 rounded-2xl bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center font-bold text-2xl border border-[#DBEAFE]">
-              {data?.user?.fullName?.charAt(0) || "A"}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#F1F5F9]">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-2xl bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center font-bold text-2xl border border-[#DBEAFE]">
+                {currentName ? currentName.charAt(0).toUpperCase() : "S"}
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-[#0F172A]">
+                  {currentName || <span className="text-[#94A3B8] italic">(No Name Specified)</span>}
+                </h3>
+                <p className="text-xs text-[#64748B] font-mono mt-0.5">Roll No: {student.rollNumber} • {student.branch}</p>
+                <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#DCFCE7] text-[#16A34A] border border-[#BBF7D0]">
+                  ● Regular Student • Semester VI
+                </span>
+              </div>
             </div>
-            <div>
-              <h3 className="text-xl font-bold text-[#0F172A]">{data?.user?.fullName || "Akshaya Narayana"}</h3>
-              <p className="text-xs text-[#64748B] font-mono mt-0.5">Roll No: {student.rollNumber} • {student.branch}</p>
-              <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#DCFCE7] text-[#16A34A] border border-[#BBF7D0]">
-                ● Regular Student • Semester VI
-              </span>
+
+            {/* Edit / Delete Action Buttons */}
+            <div className="flex items-center gap-2 self-start sm:self-auto">
+              {!isEditingName ? (
+                <>
+                  <button
+                    onClick={() => {
+                      setNewName(currentName);
+                      setIsEditingName(true);
+                    }}
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#EFF6FF] hover:bg-[#DBEAFE] text-[#2563EB] text-xs font-bold transition cursor-pointer border border-[#BFDBFE]"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" />
+                    Edit Name
+                  </button>
+                  <button
+                    onClick={handleDeleteName}
+                    disabled={isSaving}
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#FEF2F2] hover:bg-[#FEE2E2] text-[#DC2626] text-xs font-bold transition cursor-pointer border border-[#FECACA]"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Delete Name
+                  </button>
+                </>
+              ) : null}
             </div>
           </div>
+
+          {/* Inline Edit Form */}
+          {isEditingName && (
+            <div className="p-4 rounded-xl bg-[#F0FDF4] border border-[#BBF7D0] space-y-3">
+              <div className="text-xs font-bold text-[#166534] flex items-center gap-1.5">
+                <Edit3 className="w-4 h-4" />
+                Edit Student Profile Name
+              </div>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                <input
+                  type="text"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  placeholder="Enter full name"
+                  className="flex-1 px-3.5 py-2 text-sm bg-white border border-[#CBD5E1] rounded-xl focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+                />
+                <button
+                  onClick={handleSaveName}
+                  disabled={isSaving}
+                  className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold rounded-xl transition cursor-pointer shadow-xs disabled:opacity-50"
+                >
+                  {isSaving ? "Saving..." : "Save Changes"}
+                </button>
+                <button
+                  onClick={() => setIsEditingName(false)}
+                  className="px-3.5 py-2 bg-white hover:bg-[#F1F5F9] text-[#64748B] text-xs font-bold rounded-xl border border-[#CBD5E1] transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">

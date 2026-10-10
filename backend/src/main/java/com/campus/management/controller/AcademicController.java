@@ -133,4 +133,99 @@ public class AcademicController {
         res.put("source", "Campus Knowledge Base & RAG Index");
         return ResponseEntity.ok(res);
     }
+
+    // Update Student Profile (Full name, phone, etc.)
+    @PutMapping("/student/profile")
+    @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
+    public ResponseEntity<Map<String, Object>> updateStudentProfile(
+            Authentication authentication,
+            @RequestBody Map<String, String> request
+    ) {
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "User not found"));
+        }
+
+        if (request.containsKey("fullName") && request.get("fullName") != null && !request.get("fullName").isBlank()) {
+            user.setFullName(request.get("fullName").trim());
+        }
+        if (request.containsKey("phone") && request.get("phone") != null) {
+            user.setPhone(request.get("phone").trim());
+        }
+        userRepository.save(user);
+
+        Student student = studentRepository.findByUserId(user.getId()).orElse(null);
+        if (student != null && request.containsKey("address") && request.get("address") != null) {
+            student.setAddress(request.get("address").trim());
+            studentRepository.save(student);
+        }
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("message", "Profile updated successfully");
+        res.put("user", user);
+        res.put("student", student);
+        return ResponseEntity.ok(res);
+    }
+
+    // Clear / Reset Student Profile Name & Custom Fields
+    @DeleteMapping("/student/profile")
+    @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
+    public ResponseEntity<Map<String, Object>> deleteStudentProfile(Authentication authentication) {
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "User not found"));
+        }
+
+        user.setFullName("");
+        user.setPhone("");
+        userRepository.save(user);
+
+        Student student = studentRepository.findByUserId(user.getId()).orElse(null);
+        if (student != null) {
+            student.setAddress("");
+            studentRepository.save(student);
+        }
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("message", "Profile name cleared successfully");
+        res.put("user", user);
+        res.put("student", student);
+        return ResponseEntity.ok(res);
+    }
+
+    // GET Student by ID
+    @GetMapping("/students/{id}")
+    public ResponseEntity<?> getStudentById(@PathVariable Long id) {
+        return studentRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // UPDATE Student by ID
+    @PutMapping("/students/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
+    public ResponseEntity<?> updateStudentById(@PathVariable Long id, @RequestBody Student updatedData) {
+        return studentRepository.findById(id).map(existing -> {
+            if (updatedData.getBranch() != null) existing.setBranch(updatedData.getBranch());
+            if (updatedData.getSemester() != null) existing.setSemester(updatedData.getSemester());
+            if (updatedData.getSection() != null) existing.setSection(updatedData.getSection());
+            if (updatedData.getCgpa() != null) existing.setCgpa(updatedData.getCgpa());
+            if (updatedData.getAddress() != null) existing.setAddress(updatedData.getAddress());
+            studentRepository.save(existing);
+            return ResponseEntity.ok(existing);
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
+    // DELETE Student by ID
+    @DeleteMapping("/students/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deleteStudentById(@PathVariable Long id) {
+        if (!studentRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        studentRepository.deleteById(id);
+        return ResponseEntity.ok(Map.of("message", "Student deleted successfully"));
+    }
 }

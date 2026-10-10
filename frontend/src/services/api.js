@@ -73,4 +73,14 @@ export const askAiAssistant = async (query) => {
   return response.data;
 };
 
+export const updateStudentProfile = async (profileData) => {
+  const response = await api.put('/student/profile', profileData);
+  return response.data;
+};
+
+export const deleteStudentProfile = async () => {
+  const response = await api.delete('/student/profile');
+  return response.data;
+};
+
 export default api;
